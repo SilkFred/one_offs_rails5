@@ -1,9 +1,8 @@
 One Offs
 ========
 
-Track and manage your one off scripts, in rails applications.
+The purpose of this gem is to organise and log database operations for our releases. It has been updated to support MongoDB.
 
-Can be used to move stuff out from your rails migrations that dont belong there. For example data migrations can be moved from schema and into one-offs.
 
 ## Installation
 
@@ -15,48 +14,34 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install one_offs
-
 ## Usage
 
-After installing the gem, In your Rakefile (/Rakefile) add the following line
+After installing the gem, In your Rakefile add the following line
 
     require 'one_offs/tasks'
 
+A new task has now been created that allows you to create the one_off files themselves. When you need to run database operations on your
+feature, run this command: 
 
-And setup a tracker table (creates migration).
+    rake one_offs:create_one_off my_file_name
+    
+Replace 'my_file_name' with something short and concise to describe the operation. This will generate a file as so:
 
-    rake one_offs:generate_tracker_table
+    class MyFileName
+       def self.process
+         # Enter your migration code here....
+       end
+     end
+     
+Simply replace the comment with the database operations you need to run.   
+   
+__*** IMPORTANT ***__
 
-OR using SQL query if you want to avoid a migration (Useful if you need to setup one off tasks before db:migrate).
-
-    rake one_offs:create_tracker_table_using_sql
-
-Add scripts to `lib/one_offs/`
-  * File name should be <code>\<number\>_class_name_inside_file.rb</code> (Rails convention for file name to class name with the order number before that)
-
-    Example:
-
-        File: 1_hello_world.rb
-        Contents:
-            class HelloWorld
-                def self.process
-                puts("You may write your code in this process method").
-            end
-        end
-
-To run pending one_off scripts.
+__The filename is converted into a class name and therefore cannot end with the letter S. 
+It has been modified to singularise any filename to catch most of them, but double S's will probably not work.__ 
+    
+Finally to run pending one_off scripts, or to run ones other people have created after pulling a branch use this command:
 
     rake one_offs:run
 
-To baseline one_offs seed them into to the tracker table.
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+This can be set as part of the deployment process too.

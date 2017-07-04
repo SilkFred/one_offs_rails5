@@ -1,12 +1,10 @@
-require 'active_record'
-
 module OneOffs
-  class Tracker < ActiveRecord::Base
-    self.table_name = "one_off_trackers"
+  class Tracker
+    include Mongoid::Document
 
     class << self
       def complete?(name)
-        find_by_name(name).present?
+        where(name: name).first.present?
       end
 
       def complete(name)
