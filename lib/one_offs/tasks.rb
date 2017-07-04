@@ -1,19 +1,33 @@
 require 'one_offs/runner'
+
 namespace :one_offs do
+  desc "Create a one off script"
+  task :create_one_off do
+    # Get command line arguments
+    ARGV.each { |a| task a.to_sym do ; end }
+
+    # Get all existing one-off file names
+    one_off_files = Dir.glob("#{Rails.root}/lib/one_offs/**/*").map { |file| file.split('/')[-1] }
+
+    # Calculate increment for new file name
+    increment = one_off_files.any? ? one_off_files.sort.last.scan(/[0-9\(\)]+/)[0].to_i + 1 : 1
+
+    directory = Rails.root.join('lib', 'one_offs')
+    filename = ARGV[1].singularize
+
+    File.open("#{directory}/#{increment}_#{filename}.rb", "w") do |file|
+      contents = "class #{filename.classify.to_s}\n"\
+                 "  def self.process\n"\
+                 "    # Enter your migration code here....\n"\
+                 "  end\n"\
+                 "end"
+
+      file.puts(contents)
+    end
+  end
+
   desc "Run all the one-off scripts"
-  task :run  => :environment do
+  task :run => :environment do
     OneOffs::Runner.run
-  end
-
-
-  desc "Create a one off tracker table"
-  task :generate_tracker_table do
-    `rails generate migration CreateOneOffTracker name:string`
-  end
-
-  desc 'Create one off tracker table using SQL instead of migration'
-  task :create_tracker_table_using_sql => :environment do
-    sql = 'CREATE TABLE IF NOT EXISTS "one_off_trackers" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar);'
-    ActiveRecord::Base.connection.execute(sql)
   end
 end
