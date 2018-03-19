@@ -2,6 +2,8 @@ module OneOffs
   class Tracker
     include Mongoid::Document
 
+    field :name, type: String
+
     class << self
       def complete?(name)
         where(name: name).first.present?
