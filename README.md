@@ -1,7 +1,7 @@
 One Offs
 ========
 
-The purpose of this gem is to organise and log database operations for our releases. It has been updated to support MongoDB.
+The purpose of this gem is to organise and log database operations for our releases. It has been updated to support MongoDB and mongoid 6.x.
 
 
 ## Installation
