@@ -7,10 +7,10 @@ namespace :one_offs do
     ARGV.each { |a| task a.to_sym do ; end }
 
     directory = Rails.root.join('lib', 'one_offs')
-    filename = ARGV[1].singularize
+    filename = ARGV[1]
 
     File.open("#{directory}/#{Time.now.to_i}_#{filename}.rb", "w") do |file|
-      contents = "class #{filename.classify.to_s}\n"\
+      contents = "class #{filename.camelize}\n"\
                  "  def self.process\n"\
                  "    # Enter your migration code here....\n"\
                  "  end\n"\
