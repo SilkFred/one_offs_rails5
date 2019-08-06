@@ -29,6 +29,8 @@ namespace :one_offs do
       require 'one_offs/#{time}_#{filename}'
 
       RSpec.describe #{filename.camelize} do
+        before { described_class.process }
+
         it 'CHANGEME' do
           expect(1).to eq(2)
         end
