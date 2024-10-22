@@ -35,7 +35,6 @@ namespace :one_offs do
           expect(1).to eq(2)
         end
       end
-
       CONTENT
       file.puts(contents)
     end
